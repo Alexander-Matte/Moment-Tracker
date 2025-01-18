@@ -21,7 +21,7 @@ class Moment
 
     #[ORM\ManyToOne(inversedBy: 'moments')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?User $user_id = null;
+    private ?User $user = null;
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
@@ -48,7 +48,7 @@ class Moment
     private ?string $region = null;
 
     #[ORM\ManyToOne(inversedBy: 'moments')]
-    private ?Countries $country_id = null;
+    private ?Country $country = null;
 
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
@@ -187,12 +187,12 @@ class Moment
         return $this;
     }
 
-    public function getCountryId(): ?Countries
+    public function getCountryId(): ?Country
     {
         return $this->country_id;
     }
 
-    public function setCountryId(?Countries $country_id): static
+    public function setCountryId(?Country $country_id): static
     {
         $this->country_id = $country_id;
 

@@ -19,7 +19,7 @@ class Submoment
 
     #[ORM\ManyToOne(inversedBy: 'submoments')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Moment $moment_id = null;
+    private ?Moment $moment = null;
 
     #[ORM\Column(length: 255)]
     private ?string $title = null;
@@ -33,9 +33,9 @@ class Submoment
     #[ORM\Column(nullable: true)]
     private ?float $longitude = null;
 
-    #[ORM\ManyToOne(inversedBy: 'date_from')]
+    #[ORM\ManyToOne(inversedBy: 'submoments')]
     #[ORM\JoinColumn(nullable: false)]
-    private ?Countries $country_id = null;
+    private ?Country $country = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_from = null;
@@ -124,12 +124,12 @@ class Submoment
         return $this;
     }
 
-    public function getCountryId(): ?Countries
+    public function getCountryId(): ?Country
     {
         return $this->country_id;
     }
 
-    public function setCountryId(?Countries $country_id): static
+    public function setCountryId(?Country $country_id): static
     {
         $this->country_id = $country_id;
 
