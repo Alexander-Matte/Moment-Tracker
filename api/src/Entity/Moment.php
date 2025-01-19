@@ -9,56 +9,75 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use Symfony\Component\Uid\Uuid;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: MomentRepository::class)]
-#[ApiResource]
+#[ORM\HasLifecycleCallbacks]
+#[ApiResource(
+    normalizationContext: ['groups' => ['moment:read']],
+    denormalizationContext: ['groups' => ['moment:create', 'moment:update']],
+)]
 class Moment
 {
+    #[Groups(['moment:read'])]
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
     private ?int $id = null;
 
+    #[Groups(['moment:read'])]
     #[ORM\ManyToOne(inversedBy: 'moments')]
     #[ORM\JoinColumn(nullable: false)]
     private ?User $user = null;
 
+    #[Groups(['moment:read','moment:create', 'moment:update'])]
     #[ORM\Column(length: 255)]
     private ?string $title = null;
 
+    #[Groups(['moment:read','moment:create', 'moment:update'])]
     #[ORM\Column(type: Types::TEXT, nullable: true)]
     private ?string $description = null;
 
+    #[Groups(['moment:read','moment:create', 'moment:update'])]
     #[ORM\Column(nullable: true)]
     private ?float $latitude = null;
 
+    #[Groups(['moment:read','moment:create', 'moment:update'])]
     #[ORM\Column(nullable: true)]
     private ?float $longitude = null;
 
+    #[Groups(['moment:read','moment:create', 'moment:update'])]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_from = null;
 
+    #[Groups(['moment:read','moment:create', 'moment:update'])]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $date_to = null;
 
+    #[Groups(['moment:read','moment:create', 'moment:update'])]
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
     private ?\DateTimeInterface $exact_date = null;
 
+    #[Groups(['moment:read','moment:create', 'moment:update'])]
     #[ORM\Column(length: 50)]
     private ?string $region = null;
 
+    #[Groups(['moment:read','moment:create', 'moment:update'])]
     #[ORM\ManyToOne(inversedBy: 'moments')]
     private ?Country $country = null;
 
+    #[Groups(['moment:read'])]
     #[ORM\Column]
     private ?\DateTimeImmutable $created_at = null;
 
+    #[Groups(['moment:read'])]
     #[ORM\Column]
     private ?\DateTimeImmutable $updated_at = null;
 
     /**
      * @var Collection<int, Submoment>
      */
+    #[Groups(['moment:read'])]
     #[ORM\OneToMany(mappedBy: 'moment_id', targetEntity: Submoment::class)]
     private Collection $submoments;
 
@@ -204,9 +223,10 @@ class Moment
         return $this->created_at;
     }
 
-    public function setCreatedAt(\DateTimeImmutable $created_at): static
+    #[ORM\PrePersist]
+    public function setCreatedAt(): static
     {
-        $this->created_at = $created_at;
+        $this->created_at = new \DateTimeImmutable();
 
         return $this;
     }
@@ -216,9 +236,10 @@ class Moment
         return $this->updated_at;
     }
 
-    public function setUpdatedAt(\DateTimeImmutable $updated_at): static
+    #[ORM\PreUpdate]
+    public function setUpdatedAt(): static
     {
-        $this->updated_at = $updated_at;
+        $this->updated_at = new \DateTimeImmutable();
 
         return $this;
     }
