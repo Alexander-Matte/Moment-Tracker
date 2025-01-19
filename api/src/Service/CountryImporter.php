@@ -1,8 +1,10 @@
 <?php
+
 namespace App\Service;
 
 use App\Entity\Country;
 use Doctrine\ORM\EntityManagerInterface;
+use Symfony\Component\Uid\Uuid;
 use Symfony\Contracts\HttpClient\HttpClientInterface;
 use Psr\Log\LoggerInterface;
 
@@ -23,7 +25,7 @@ class CountryImporter
     {
         $apiKey = $_ENV['COUNTRY_API_KEY'];
         try {
-            $response = $this->httpClient->request('GET','https://countryapi.io/api/all?apikey=' . $apiKey);
+            $response = $this->httpClient->request('GET', 'https://countryapi.io/api/all?apikey=' . $apiKey);
             $countryData = $response->toArray();
             $this->logger->info('Successfully fetched country data from API.');
         } catch (\Exception $e) {
@@ -36,6 +38,7 @@ class CountryImporter
             $iso = $country['alpha3Code'];
             $region = $country['region'];
 
+            // Check if the country already exists by its ISO code
             $existingCountry = $this->entityManager->getRepository(Country::class)->findOneBy(['iso' => $iso]);
 
             if ($existingCountry) {
@@ -53,7 +56,9 @@ class CountryImporter
                 continue;
             }
 
+            // Create a new country entity and set the fields
             $newCountry = new Country();
+            $newCountry->setId(Uuid::v4()); // Generate a UUID for the id field
             $newCountry->setName($name);
             $newCountry->setIso($iso);
             $newCountry->setRegion($region);
@@ -63,8 +68,8 @@ class CountryImporter
             $this->logger->info('Created new country: ' . $name . ' (' . $iso . ')');
         }
 
+        // Flush the changes to the database
         $this->entityManager->flush();
+        $this->logger->info('All countries have been successfully imported/updated.');
     }
 }
-
-
