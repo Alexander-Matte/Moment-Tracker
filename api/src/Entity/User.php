@@ -10,6 +10,8 @@ use ApiPlatform\Metadata\Post;
 use ApiPlatform\Metadata\Put;
 use ApiPlatform\Metadata\Patch;
 use ApiPlatform\Metadata\Delete;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 use App\Repository\UserRepository;
@@ -70,6 +72,17 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     #[ORM\Column]
     #[Groups(['user:read'])]
     private ?\DateTimeImmutable $updated_at = null;
+
+    /**
+     * @var Collection<int, Moment>
+     */
+    #[ORM\OneToMany(targetEntity: Moment::class, mappedBy: 'user_id', orphanRemoval: true)]
+    private Collection $moments;
+
+    public function __construct()
+    {
+        $this->moments = new ArrayCollection();
+    }
 
     public function getId(): ?int
     {
@@ -175,6 +188,36 @@ class User implements UserInterface, PasswordAuthenticatedUserInterface
     public function onPreUpdate(): void
     {
         $this->updated_at = new \DateTimeImmutable();
+    }
+
+    /**
+     * @return Collection<int, Moment>
+     */
+    public function getMoments(): Collection
+    {
+        return $this->moments;
+    }
+
+    public function addMoment(Moment $moment): static
+    {
+        if (!$this->moments->contains($moment)) {
+            $this->moments->add($moment);
+            $moment->setUserId($this);
+        }
+
+        return $this;
+    }
+
+    public function removeMoment(Moment $moment): static
+    {
+        if ($this->moments->removeElement($moment)) {
+            // set the owning side to null (unless already changed)
+            if ($moment->getUserId() === $this) {
+                $moment->setUserId(null);
+            }
+        }
+
+        return $this;
     }
 }
 
