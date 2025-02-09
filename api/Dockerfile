@@ -5,7 +5,17 @@ RUN apt-get update && apt-get install -y \
     libpq-dev \
     git \
     unzip \
+    wget \
+    curl \
+    nano \
     && docker-php-ext-install pdo pdo_pgsql
+
+# Install Composer (latest version 2.8.5)
+RUN curl -sS https://getcomposer.org/installer | php -- --install-dir=/usr/local/bin --filename=composer
+
+# Install Symfony CLI
+RUN wget https://get.symfony.com/cli/installer -O - | bash \
+    && mv /root/.symfony*/bin/symfony /usr/local/bin/symfony
 
 # Enable Apache mod_rewrite
 RUN a2enmod rewrite
@@ -13,8 +23,7 @@ RUN a2enmod rewrite
 # Set working directory
 WORKDIR /var/www/api
 
-# Copy composer and install dependencies
-COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
+# Copy project files into the container
 COPY . .
 
 # Install PHP dependencies
