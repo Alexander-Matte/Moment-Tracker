@@ -14,7 +14,7 @@ use Symfony\Contracts\HttpClient\HttpClientInterface;
     name: 'app:populate-countries',
     description: 'Fetches countries from the REST API and populates the Country table.',
 )]
-class PopulateCountriesCommand extends Command
+class PopulateCountries extends Command
 {
     private EntityManagerInterface $entityManager;
     private HttpClientInterface $httpClient;
