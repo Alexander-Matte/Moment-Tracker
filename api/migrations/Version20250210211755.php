@@ -10,7 +10,7 @@ use Doctrine\Migrations\AbstractMigration;
 /**
  * Auto-generated Migration: Please modify to your needs!
  */
-final class Version20250209181315 extends AbstractMigration
+final class Version20250210211755 extends AbstractMigration
 {
     public function getDescription(): string
     {
@@ -35,6 +35,10 @@ final class Version20250209181315 extends AbstractMigration
         $this->addSql('CREATE INDEX IDX_53F0008776A0D779 ON submoment (county_id_id)');
         $this->addSql('COMMENT ON COLUMN submoment.created_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('COMMENT ON COLUMN submoment.updated_at IS \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('CREATE TABLE "user" (id SERIAL NOT NULL, email VARCHAR(180) NOT NULL, password VARCHAR(255) NOT NULL, roles JSON NOT NULL, birthday DATE DEFAULT NULL, created_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, updated_at TIMESTAMP(0) WITHOUT TIME ZONE NOT NULL, PRIMARY KEY(id))');
+        $this->addSql('CREATE UNIQUE INDEX UNIQ_8D93D649E7927C74 ON "user" (email)');
+        $this->addSql('COMMENT ON COLUMN "user".created_at IS \'(DC2Type:datetime_immutable)\'');
+        $this->addSql('COMMENT ON COLUMN "user".updated_at IS \'(DC2Type:datetime_immutable)\'');
         $this->addSql('ALTER TABLE moment ADD CONSTRAINT FK_358C88A29D86650F FOREIGN KEY (user_id_id) REFERENCES "user" (id) NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE moment_country ADD CONSTRAINT FK_74198F2AABE99143 FOREIGN KEY (moment_id) REFERENCES moment (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
         $this->addSql('ALTER TABLE moment_country ADD CONSTRAINT FK_74198F2AF92F3E70 FOREIGN KEY (country_id) REFERENCES country (id) ON DELETE CASCADE NOT DEFERRABLE INITIALLY IMMEDIATE');
@@ -55,5 +59,6 @@ final class Version20250209181315 extends AbstractMigration
         $this->addSql('DROP TABLE moment');
         $this->addSql('DROP TABLE moment_country');
         $this->addSql('DROP TABLE submoment');
+        $this->addSql('DROP TABLE "user"');
     }
 }
