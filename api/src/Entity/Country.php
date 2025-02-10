@@ -7,23 +7,36 @@ use App\Repository\CountryRepository;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Serializer\Annotation\Groups;
+use ApiPlatform\Metadata\GetCollection;
+use ApiPlatform\Metadata\Get;
 
 #[ORM\Entity(repositoryClass: CountryRepository::class)]
-#[ApiResource]
+#[ApiResource(
+    operations: [
+        new Get(),
+        new GetCollection()
+    ],
+    normalizationContext: ['groups' => ['country:read']]
+)]
 class Country
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['country:read'])]
     private ?int $id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['country:read'])]
     private ?string $name = null;
 
     #[ORM\Column(length: 3)]
+    #[Groups(['country:read'])]
     private ?string $code = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['country:read'])]
     private ?string $region = null;
 
     #[ORM\Column]

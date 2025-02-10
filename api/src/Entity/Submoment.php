@@ -3,46 +3,63 @@
 namespace App\Entity;
 
 use ApiPlatform\Metadata\ApiResource;
-use App\Repository\SubmomentRepository;
+use Symfony\Component\Serializer\Annotation\Groups;
+use App\Repository\MomentRepository;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
 
 #[ORM\Entity(repositoryClass: SubmomentRepository::class)]
-#[ApiResource]
+#[ORM\HasLifecycleCallbacks]
+#[ApiResource(
+    normalizationContext: ['groups' => ['subMoment:read']],
+    denormalizationContext: ['groups' => ['subMoment:write', 'subMoment:update']]
+)]
 class Submoment
 {
     #[ORM\Id]
     #[ORM\GeneratedValue]
     #[ORM\Column]
+    #[Groups(['subMoment:read'])]
     private ?int $id = null;
 
     #[ORM\ManyToOne(inversedBy: 'submoments')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['subMoment:read', 'subMoment:write'])]
     private ?Moment $moment_id = null;
 
     #[ORM\Column(length: 255)]
+    #[Groups(['subMoment:read', 'subMoment:write', 'subMoment:update'])]
     private ?string $title = null;
 
     #[ORM\Column(type: Types::TEXT, nullable: true)]
+    #[Groups(['subMoment:read', 'subMoment:write', 'subMoment:update'])]
     private ?string $description = null;
 
     #[ORM\ManyToOne(inversedBy: 'submoments')]
     #[ORM\JoinColumn(nullable: false)]
+    #[Groups(['subMoment:read', 'subMoment:write', 'subMoment:update'])]
     private ?Country $county_id = null;
 
     #[ORM\Column]
+    #[Groups(['subMoment:read'])]
     private ?\DateTimeImmutable $created_at = null;
 
     #[ORM\Column]
+    #[Groups(['subMoment:read'])]
     private ?\DateTimeImmutable $updated_at = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['subMoment:read', 'subMoment:write', 'subMoment:update'])]
     private ?\DateTimeInterface $date_from = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['subMoment:read', 'subMoment:write', 'subMoment:update'])]
     private ?\DateTimeInterface $date_to = null;
 
     #[ORM\Column(type: Types::DATE_MUTABLE, nullable: true)]
+    #[Groups(['subMoment:read', 'subMoment:write', 'subMoment:update'])]
     private ?\DateTimeInterface $exact_date = null;
 
     public function getId(): ?int
@@ -163,5 +180,18 @@ class Submoment
         $this->exact_date = $exact_date;
 
         return $this;
+    }
+
+    #[ORM\PrePersist]
+    public function onPrePersist(): void
+    {
+        $this->created_at = new \DateTimeImmutable();
+        $this->updated_at = new \DateTimeImmutable();
+    }
+
+    #[ORM\PreUpdate]
+    public function onPreUpdate(): void
+    {
+        $this->updated_at = new \DateTimeImmutable();
     }
 }
