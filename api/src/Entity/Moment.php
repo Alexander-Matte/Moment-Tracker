@@ -27,7 +27,7 @@ class Moment
     #[ORM\ManyToOne(inversedBy: 'moments')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['moment:read', 'moment:write'])]
-    private ?User $user_id = null;
+    private ?User $user = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['moment:read', 'moment:write', 'moment:update'])]

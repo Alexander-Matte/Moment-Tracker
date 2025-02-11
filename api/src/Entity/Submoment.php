@@ -27,7 +27,7 @@ class Submoment
     #[ORM\ManyToOne(inversedBy: 'submoments')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['subMoment:read', 'subMoment:write'])]
-    private ?Moment $moment_id = null;
+    private ?Moment $moment = null;
 
     #[ORM\Column(length: 255)]
     #[Groups(['subMoment:read', 'subMoment:write', 'subMoment:update'])]
@@ -40,7 +40,7 @@ class Submoment
     #[ORM\ManyToOne(inversedBy: 'submoments')]
     #[ORM\JoinColumn(nullable: false)]
     #[Groups(['subMoment:read', 'subMoment:write', 'subMoment:update'])]
-    private ?Country $county_id = null;
+    private ?Country $country = null;
 
     #[ORM\Column]
     #[Groups(['subMoment:read'])]
