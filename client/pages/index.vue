@@ -1,19 +1,23 @@
 <template>
   <div class="min-h-screen flex flex-col">
     <!-- Header -->
-    <header class="py-6 px-10 border-b">
-      <div class="container mx-auto flex justify-between items-center">
+    <header class="py-6 px-2 border-b">
+      <div class="container mx-auto flex items-center">
+        <!-- Left: Title -->
         <h1 class="text-2xl font-bold">Moment Tracker</h1>
-        
-        <aside>
-          <UTabs :items="SIDEBARITEMS" />
-        </aside>
 
-        <button @click="toggleDarkMode" class="text-link hover:underline">
+        <!-- Middle: Tabs -->
+        <div class="flex-1 flex justify-center">
+          <UTabs :items="SIDEBARITEMS" class="max-w-xl w-full" />
+        </div>
+
+        <!-- Right: Toggle Button -->
+        <button @click="toggleDarkMode" class="text-link hover:underline text-right">
           Toggle Theme
         </button>
       </div>
     </header>
+
 
     <!-- Main Content -->
     <main class="flex-1 flex justify-center items-center px-6">
@@ -42,10 +46,10 @@
 const isDarkMode = ref(false)
 
 const SIDEBARITEMS = [{
-  label: 'My Moments',
-  icon: 'i-heroicons-heart-16-solid',
+  label: 'Home',
+  icon: 'i-heroicons-home-20-solid',
 }, {
-  label: 'Create and Manage Moments',
+  label: 'Moment Manager',
   icon: 'i-heroicons-pencil-square-16-solid',
 }, {
   label: 'Statistics',
