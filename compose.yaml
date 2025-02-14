@@ -1,5 +1,3 @@
-version: '3.8'
-
 services:
   ###> Nuxt Frontend ###
   client:
@@ -16,6 +14,8 @@ services:
       - NUXT_PUBLIC_API_URL=http://symfony_api:80/api
     depends_on:
       - api
+    stop_signal: SIGINT
+    command: ["npm", "run", "dev"]
     networks:
       - symfony_network
   ###< Nuxt Frontend ###

@@ -1,6 +1,5 @@
 export interface Moment {
   "@id"?: string;
-  user_id?: string;
   title?: string;
   description?: string;
   date_from?: Date;
