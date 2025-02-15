@@ -3,12 +3,13 @@
     <Header
       :isLightMode="isLightMode"
       :navTabItems="navTabItems"
+      :selectedTab="selectedTab"
       @tabChange="onTabChange"
       @lightModeUpdate="onLightModeUpdate"
     />
     <main class="flex-1 flex justify-center items-center px-6">
       <div class="max-w-2xl w-full px-8 py-6">
-        <slot />
+        <NuxtPage />
       </div>
     </main>
     <Footer />
@@ -17,44 +18,37 @@
 
 <script setup lang="ts">
 import { useSettingsStore } from '@/stores/useSettingsStore'
+import { useRouter, useRoute } from 'vue-router'
+
 const settingsStore = useSettingsStore()
-
+const router = useRouter()
+const route = useRoute()
 const isLightMode = ref(settingsStore.isLightMode)
-const selected = ref(0)
-const navTabItems = [{
-  label: 'Home',
-  icon: 'i-heroicons-home-20-solid',
-}, {
-  label: 'Moment Manager',
-  icon: 'i-heroicons-pencil-square-16-solid',
-}, {
-  label: 'Statistics',
-  icon: 'i-heroicons-presentation-chart-bar-solid',
-}]
+const navTabItems = [
+  { label: 'Home', icon: 'i-heroicons-home-20-solid', route: '/' },
+  { label: 'Moment Manager', icon: 'i-heroicons-pencil-square-16-solid', route: '/moments' },
+  { label: 'Statistics', icon: 'i-heroicons-presentation-chart-bar-solid', route: '/statistics' }
+]
 
-// Handle tab change
-function onTabChange(index: number) {
-  selected.value = index
-}
-
-onMounted(() => {
-  if (settingsStore.isLightMode) {
-    // Remove 'dark' class to ensure light mode is applied by default
-    document.documentElement.classList.remove('dark')
-  } else {
-    // Add 'dark' class if dark mode is active
-    document.documentElement.classList.add('dark')
+// Compute the selected tab based on the URL query
+const selectedTab = computed({
+  get() {
+    const index = navTabItems.findIndex(item => item.route === route.path)
+    return index !== -1 ? index : 0
+  },
+  set(value) {
+    router.replace({ path: navTabItems[value].route, query: { tab: navTabItems[value].label } })
   }
 })
 
+// Handle tab change
+function onTabChange(index: number) {
+  selectedTab.value = index
+}
+
+// Dark mode toggle
 function onLightModeUpdate(value: boolean) {
   settingsStore.setLightMode(value)
-
-  // Toggle the 'dark' class based on user preference
-  if (value) {
-    document.documentElement.classList.remove('dark')
-  } else {
-    document.documentElement.classList.add('dark')
-  }
+  document.documentElement.classList.toggle('dark', !value)
 }
 </script>

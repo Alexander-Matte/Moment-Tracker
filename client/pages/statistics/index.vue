@@ -2,7 +2,7 @@
 <template>
     <div>
       <h2 class="text-xl font-semibold text-accent mb-4">
-        Manage Your Moments
+        Statistics
       </h2>
       <!-- Your moment management content here -->
     </div>

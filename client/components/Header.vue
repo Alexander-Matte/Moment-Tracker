@@ -6,17 +6,14 @@
 
       <!-- Middle: Tabs -->
       <div class="flex-1 flex justify-center">
-        <UTabs
-          :items="navTabItems"
-          @change="onTabChange"
-        />
+        <UTabs :items="navTabItems" :model-value="selectedTab" @update:model-value="onTabChange" />
       </div>
 
       <!-- Darkmode Toggle -->
       <i :class="isLightMode ? 'i-heroicons-sun-20-solid' : 'i-heroicons-moon-20-solid'"></i>
 
       <UToggle
-        v-model="selected"
+        v-model="selectedTheme"
         size="2xl"
         on-icon="i-heroicons-sun-20-solid"
         off-icon="i-heroicons-moon-20-solid"
@@ -32,7 +29,9 @@
 const props = defineProps<{
   isLightMode: boolean
   navTabItems: { label: string }[]
+  selectedTab: number
 }>()
+
 
 const emit = defineEmits<{
   tabChange: [id: number]
@@ -40,7 +39,7 @@ const emit = defineEmits<{
 }>()
 
 
-const selected = ref(props.isLightMode)
+const selectedTheme = ref(props.isLightMode)
 
 // Emit tab change event with the tab index
 function onTabChange(index: number) {
