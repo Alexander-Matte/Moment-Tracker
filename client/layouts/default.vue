@@ -2,9 +2,7 @@
   <div class="min-h-screen flex flex-col">
     <Header
       :isLightMode="isLightMode"
-      :navTabItems="navTabItems"
-      :selectedTab="selectedTab"
-      @tabChange="onTabChange"
+      :navLinks="navLinks"
       @lightModeUpdate="onLightModeUpdate"
     />
     <main class="flex-1 flex justify-center items-center px-6">
@@ -17,38 +15,35 @@
 </template>
 
 <script setup lang="ts">
-import { useSettingsStore } from '@/stores/useSettingsStore'
-import { useRouter, useRoute } from 'vue-router'
-
 const settingsStore = useSettingsStore()
 const router = useRouter()
 const route = useRoute()
 const isLightMode = ref(settingsStore.isLightMode)
-const navTabItems = [
-  { label: 'Home', icon: 'i-heroicons-home-20-solid', route: '/' },
-  { label: 'Moment Manager', icon: 'i-heroicons-pencil-square-16-solid', route: '/moments' },
-  { label: 'Statistics', icon: 'i-heroicons-presentation-chart-bar-solid', route: '/statistics' }
+
+const navLinks = [
+  { label: 'Home', icon: 'i-heroicons-home', to: '/' },
+  { label: 'Moment Manager', icon: 'i-heroicons-pencil-square', to: '/moments' },
+  { label: 'Statistics', icon: 'i-heroicons-chart-bar', to: '/statistics' }
 ]
 
-// Compute the selected tab based on the URL query
 const selectedTab = computed({
   get() {
-    const index = navTabItems.findIndex(item => item.route === route.path)
+    const index = navLinks.findIndex(item => item.to === route.path)
     return index !== -1 ? index : 0
   },
   set(value) {
-    router.replace({ path: navTabItems[value].route, query: { tab: navTabItems[value].label } })
+    router.replace({ path: navLinks[value].to })
   }
 })
 
-// Handle tab change
-function onTabChange(index: number) {
-  selectedTab.value = index
-}
-
-// Dark mode toggle
 function onLightModeUpdate(value: boolean) {
   settingsStore.setLightMode(value)
   document.documentElement.classList.toggle('dark', !value)
 }
+
+// Check and apply theme on mount using store
+onMounted(() => {
+  isLightMode.value = settingsStore.isLightMode
+  document.documentElement.classList.toggle('dark', !isLightMode.value)
+})
 </script>
