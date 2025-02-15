@@ -9,7 +9,7 @@ services:
       - "3000:3000"
     volumes:
       - ./client:/usr/src/client
-      - /usr/src/client/node_modules
+      - ./client/node_modules:/usr/src/client/node_modules
     environment:
       - NUXT_PUBLIC_API_URL=http://symfony_api:80/api
     depends_on:
