@@ -10,11 +10,20 @@
         <div class="flex-1 flex justify-center">
           <UTabs v-model="selected" :items="navTabItems" class="max-w-xl w-full" />
         </div>
+      <!-- Darkmode Toggle -->
+      <!-- Left Icon -->
+      <i :class="isDarkMode ? 'i-heroicons-sun-20-solid' : 'i-heroicons-moon-20-solid'"></i>
 
-        <!-- Right: Toggle Button -->
-        <button @click="toggleDarkMode" class="text-link hover:underline text-right">
-          Toggle Theme
-        </button>
+      <!-- Toggle -->
+      <UToggle
+        v-model="isDarkMode"
+        size="2xl"
+        on-icon="i-heroicons-sun-20-solid"
+        off-icon="i-heroicons-moon-20-solid"
+      />
+
+      <!-- Right Icon -->
+      <i :class="isDarkMode ? 'i-heroicons-sun-20-solid' : 'i-heroicons-moon-20-solid'"></i>
       </div>
     </header>
 
@@ -43,6 +52,8 @@
 
 <script setup lang="ts">
 
+const route = useRoute()
+const router = useRouter()
 const isDarkMode = ref(false)
 
 const navTabItems = [{
@@ -56,17 +67,20 @@ const navTabItems = [{
   icon: 'i-heroicons-presentation-chart-bar-solid',
 }]
 
-const toggleDarkMode = () => {
-  isDarkMode.value = !isDarkMode.value
-  if (isDarkMode.value) {
-    document.documentElement.classList.add('dark')
-  } else {
-    document.documentElement.classList.remove('dark')
-  }
-}
+// Watch for changes and apply the class
+watch(isDarkMode, (newValue) => {
+  document.documentElement.classList.toggle('dark', newValue)
+  localStorage.setItem('darkMode', newValue ? 'true' : 'false')
+})
 
-const route = useRoute()
-const router = useRouter()
+onMounted(() => {
+  const storedPreference = localStorage.getItem('darkMode') === 'true'
+  isDarkMode.value = storedPreference
+
+  // Apply dark mode class immediately on page load
+  document.documentElement.classList.toggle('dark', storedPreference)
+})
+
 
 const selected = computed({
   get() {
