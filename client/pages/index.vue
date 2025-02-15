@@ -8,7 +8,7 @@
 
         <!-- Middle: Tabs -->
         <div class="flex-1 flex justify-center">
-          <UTabs :items="SIDEBARITEMS" class="max-w-xl w-full" />
+          <UTabs v-model="selected" :items="navTabItems" class="max-w-xl w-full" />
         </div>
 
         <!-- Right: Toggle Button -->
@@ -45,7 +45,7 @@
 
 const isDarkMode = ref(false)
 
-const SIDEBARITEMS = [{
+const navTabItems = [{
   label: 'Home',
   icon: 'i-heroicons-home-20-solid',
 }, {
@@ -64,6 +64,24 @@ const toggleDarkMode = () => {
     document.documentElement.classList.remove('dark')
   }
 }
+
+const route = useRoute()
+const router = useRouter()
+
+const selected = computed({
+  get() {
+    const index = navTabItems.findIndex(item => item.label === route.query.tab)
+    if (index === -1) {
+      return 0
+    }
+
+    return index
+  },
+  set(value) {
+    // Hash is specified here to prevent the page from scrolling to the top
+    router.replace({ query: { tab: navTabItems[value].label }})
+  }
+})
 </script>
 
 <style scoped>
