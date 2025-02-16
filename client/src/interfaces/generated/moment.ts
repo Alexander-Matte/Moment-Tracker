@@ -6,7 +6,7 @@ export interface Moment {
   date_to?: Date;
   exact_date?: Date;
   region?: string;
-  county_id?: string[];
+  country_id?: string[];
   submoments?: string[];
   readonly created_at?: Date;
   readonly updated_at?: Date;

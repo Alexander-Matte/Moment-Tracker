@@ -9,11 +9,18 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use ApiPlatform\Metadata\GetCollection;
 use ApiPlatform\Metadata\Get;
+use Symfony\Component\Serializer\Annotation\Groups;
 
 #[ORM\Entity(repositoryClass: CountryRepository::class)]
 #[ApiResource(
+    operations: [
+        new GetCollection(normalizationContext: ['groups' => ['country:read']],
+        paginationItemsPerPage: 300),
+        new Get(normalizationContext: ['groups' => ['country:read']]),
+    ],
     normalizationContext: ['groups' => ['country:read']]
 )]
+
 class Country
 {
     #[ORM\Id]
@@ -43,13 +50,13 @@ class Country
     /**
      * @var Collection<int, Moment>
      */
-    #[ORM\ManyToMany(targetEntity: Moment::class, mappedBy: 'county_id')]
+    #[ORM\ManyToMany(targetEntity: Moment::class, mappedBy: 'country_id')]
     private Collection $moments;
 
     /**
      * @var Collection<int, Submoment>
      */
-    #[ORM\OneToMany(targetEntity: Submoment::class, mappedBy: 'county_id')]
+    #[ORM\OneToMany(targetEntity: Submoment::class, mappedBy: 'country_id')]
     private Collection $submoments;
 
     public function __construct()
@@ -142,7 +149,7 @@ class Country
     {
         if (!$this->moments->contains($moment)) {
             $this->moments->add($moment);
-            $moment->addCountyId($this);
+            $moment->addCountryId($this);
         }
 
         return $this;
@@ -151,7 +158,7 @@ class Country
     public function removeMoment(Moment $moment): static
     {
         if ($this->moments->removeElement($moment)) {
-            $moment->removeCountyId($this);
+            $moment->removeCountryId($this);
         }
 
         return $this;
@@ -169,7 +176,7 @@ class Country
     {
         if (!$this->submoments->contains($submoment)) {
             $this->submoments->add($submoment);
-            $submoment->setCountyId($this);
+            $submoment->setCountryId($this);
         }
 
         return $this;
@@ -179,8 +186,8 @@ class Country
     {
         if ($this->submoments->removeElement($submoment)) {
             // set the owning side to null (unless already changed)
-            if ($submoment->getCountyId() === $this) {
-                $submoment->setCountyId(null);
+            if ($submoment->getCountryId() === $this) {
+                $submoment->setCountryId(null);
             }
         }
 

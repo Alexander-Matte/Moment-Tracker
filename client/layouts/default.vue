@@ -1,13 +1,18 @@
 <template>
-  <div class="min-h-screen flex flex-col">
+  <div :class="{ 'dark': !isLightMode }" class="min-h-screen flex flex-col bg-light-primary dark:bg-dark-primary text-black dark:text-white">
     <Header
       :isLightMode="isLightMode"
       :navLinks="navLinks"
       @lightModeUpdate="onLightModeUpdate"
     />
-    <main class="flex-1 flex justify-center items-center px-6">
-      <div class="max-w-2xl w-full px-8 py-6">
-        <NuxtPage />
+    <main class="flex px-6">
+      <div class="flex" v-if="route.path.match('/moments')">
+        <Sidebar />
+      </div>
+      <div class="flex flex-1 justify-center">
+        <div class="max-w-2xl w-full mx-auto">
+          <NuxtPage />
+        </div>
       </div>
     </main>
     <Footer />
@@ -38,10 +43,11 @@ const selectedTab = computed({
 
 function onLightModeUpdate(value: boolean) {
   settingsStore.setLightMode(value)
+  isLightMode.value = value
   document.documentElement.classList.toggle('dark', !value)
 }
 
-// Check and apply theme on mount using store
+// Ensure theme is correctly applied on mount
 onMounted(() => {
   isLightMode.value = settingsStore.isLightMode
   document.documentElement.classList.toggle('dark', !isLightMode.value)

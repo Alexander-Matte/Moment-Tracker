@@ -110,14 +110,14 @@ class Submoment
         return $this;
     }
 
-    public function getCountyId(): ?Country
+    public function getCountryId(): ?Country
     {
-        return $this->county_id;
+        return $this->country_id;
     }
 
-    public function setCountyId(?Country $county_id): static
+    public function setCountryId(?Country $country_id): static
     {
-        $this->county_id = $county_id;
+        $this->country_id = $country_id;
 
         return $this;
     }

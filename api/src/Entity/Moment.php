@@ -58,7 +58,7 @@ class Moment
      */
     #[ORM\ManyToMany(targetEntity: Country::class, inversedBy: 'moments')]
     #[Groups(['moment:read', 'moment:write', 'moment:update'])]
-    private Collection $county_id;
+    private Collection $country_id;
 
     #[ORM\Column]
     #[Groups(['moment:read'])]
@@ -77,7 +77,7 @@ class Moment
 
     public function __construct()
     {
-        $this->county_id = new ArrayCollection();
+        $this->country_id = new ArrayCollection();
         $this->submoments = new ArrayCollection();
     }
 
@@ -180,23 +180,23 @@ class Moment
     /**
      * @return Collection<int, Country>
      */
-    public function getCountyId(): Collection
+    public function getCountryId(): Collection
     {
-        return $this->county_id;
+        return $this->country_id;
     }
 
-    public function addCountyId(Country $countyId): static
+    public function addCountryId(Country $countryId): static
     {
-        if (!$this->county_id->contains($countyId)) {
-            $this->county_id->add($countyId);
+        if (!$this->country_id->contains($countryId)) {
+            $this->country_id->add($countryId);
         }
 
         return $this;
     }
 
-    public function removeCountyId(Country $countyId): static
+    public function removeCountryId(Country $countryId): static
     {
-        $this->county_id->removeElement($countyId);
+        $this->country_id->removeElement($countryId);
 
         return $this;
     }
