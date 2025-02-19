@@ -15,7 +15,7 @@ services:
     depends_on:
       - api
     stop_signal: SIGINT
-    command: ["npm", "run", "dev"]
+    command: ["/bin/sh", "-c", "pkill -f nuxt || true && npx nuxt dev --force-exit"]
     networks:
       - symfony_network
   ###< Nuxt Frontend ###

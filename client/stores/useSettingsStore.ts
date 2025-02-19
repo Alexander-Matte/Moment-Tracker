@@ -1,14 +1,16 @@
 export const useSettingsStore = defineStore('settings', () => {
     const lightMode = ref(true)
+
   
     function setLightMode(value: boolean) {
       lightMode.value = value
     }
-  
+
     const isLightMode = computed(() => lightMode.value)
+
   
-    return { lightMode, setLightMode, isLightMode }
+    return { setLightMode, isLightMode, lightMode}
   }, {
-    persist: true, // This enables persistence for this store
+    persist: true,
   })
   

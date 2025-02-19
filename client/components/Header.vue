@@ -23,7 +23,6 @@ const props = defineProps<{
 }>()
 
 const emit = defineEmits<{
-  tabChange: [id: number]
   lightModeUpdate: [value: boolean]
 }>()
 
